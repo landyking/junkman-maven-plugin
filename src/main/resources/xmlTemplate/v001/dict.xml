@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE dicts [
+        <!ELEMENT dicts (dict)*>
+        <!ELEMENT dict (const)*>
+        <!ATTLIST dict
+                desc CDATA #REQUIRED
+                code ID #REQUIRED>
+        <!ELEMENT const (const)*>
+        <!ATTLIST const
+                desc CDATA #REQUIRED
+                code CDATA #REQUIRED>
+        ]>
+<dicts>
+    <dict code="gender" desc="性别">
+        <const code="1" desc="先生"/>
+        <const code="0" desc="女士"/>
+    </dict>
+</dicts>

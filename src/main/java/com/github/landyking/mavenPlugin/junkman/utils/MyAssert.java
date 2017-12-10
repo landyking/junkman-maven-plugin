@@ -9,4 +9,10 @@ public class MyAssert {
             throw new IllegalArgumentException("value is null");
         }
     }
+
+    public static void isTrue(boolean rst) {
+        if (!rst) {
+            throw new IllegalArgumentException("value not true");
+        }
+    }
 }

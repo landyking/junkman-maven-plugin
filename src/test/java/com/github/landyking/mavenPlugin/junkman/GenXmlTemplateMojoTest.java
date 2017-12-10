@@ -1,5 +1,6 @@
 package com.github.landyking.mavenPlugin.junkman;
 
+import junit.framework.TestCase;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.plugin.testing.MojoRule;
@@ -15,10 +16,9 @@ import org.junit.Test;
 import java.io.File;
 
 /**
- * 必须执行过package之后才能执行该测试用例。不然MojoDescriptor未生成
- * Created by landy on 2017/12/9.
+ * Created by landy on 2017/12/10.
  */
-public class CheckerMojoTest {
+public class GenXmlTemplateMojoTest{
     @Rule
     public MojoRule rule = new MojoRule();
 
@@ -27,7 +27,7 @@ public class CheckerMojoTest {
 
 
     @Test
-    public void checkSourcesDirectoriesAreUpdated() throws Exception {
+    public void testExecute() throws Exception {
 
         // Find the project
         File baseDir = this.resources.getBasedir( "project-test" );
@@ -44,10 +44,9 @@ public class CheckerMojoTest {
                 .setRepositorySession(new DefaultRepositorySystemSession());
         MavenProject project = rule.lookup(ProjectBuilder.class).build(pom, configuration).getProject();
         System.out.println(project.getBasedir().getAbsolutePath());
-        CheckerMojo mojo = (CheckerMojo) rule.lookupConfiguredMojo(project, "checker");
+        GenXmlTemplateMojo mojo = (GenXmlTemplateMojo) rule.lookupConfiguredMojo(project, "genXmlTemplate");
         Assert.assertNotNull(mojo);
         mojo.execute();
 
     }
-
 }

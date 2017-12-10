@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE database [
+        <!ELEMENT database (tables)>
+        <!ATTLIST database
+                name CDATA #REQUIRED
+                desc CDATA #REQUIRED>
+        <!ELEMENT tables (table)+>
+        <!ELEMENT table (columns)>
+        <!ATTLIST table
+                desc CDATA #REQUIRED
+                name CDATA #REQUIRED>
+        <!ELEMENT columns (column)+>
+        <!ELEMENT column EMPTY>
+        <!ATTLIST column
+                decimalLen CDATA #IMPLIED
+                desc CDATA #REQUIRED
+                len CDATA #IMPLIED
+                name CDATA #REQUIRED
+                nullable (true|false) "false"
+                primaryKey (true|false) "false"
+                dictCode CDATA #IMPLIED
+                foreignKey CDATA #IMPLIED
+                type (long|text|int|longtext|float) #REQUIRED >
+        ]>
+<database name="databaseName" desc="数据库说明">
+    <tables>
+        <table name="t_operate_log" desc="操作日志表">
+            <columns>
+                <column name="id" type="long" desc="主键" primaryKey="true"/>
+                <column name="operator" type="long" desc="操作人" foreignKey="t_manager.id"/>
+                <column name="type" type="int" desc="操作类型" dictCode="manager_operate_type"/>
+                <column name="note" type="text" len="100" desc="操作说明" nullable="true"/>
+                <column name="create_time" type="long" desc="创建时间"/>
+            </columns>
+        </table>
+    </tables>
+</database>
