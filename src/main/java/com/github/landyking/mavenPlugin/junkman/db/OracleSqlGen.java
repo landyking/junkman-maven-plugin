@@ -5,6 +5,7 @@ import com.github.landyking.mavenPlugin.junkman.utils.Texts;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
+import org.apache.maven.plugin.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,22 +20,43 @@ import java.util.List;
  * Created by landy on 2017/12/7.
  */
 public class OracleSqlGen {
-    private final static Logger logger = LoggerFactory.getLogger(OracleSqlGen.class);
-
-    public static void main(String[] args) throws ConfigurationException, FileNotFoundException, URISyntaxException {
-        XMLConfiguration cfg = new XMLConfiguration("E:\\git\\yiwangkao\\ywk-server\\docs\\system_design\\database.xml");
-        List<HierarchicalConfiguration> tables = cfg.configurationsAt("tables.table");
-        logger.info("检测到{}张表", tables.size());
-        logger.info("#######################");
-        for (HierarchicalConfiguration tb : tables) {
-            logger.info("{} : {}", tb.getString("[@name]"), tb.getString("[@desc]"));
+    private static String getColumnType(String colType, Integer colLen, Integer decimalLen) {
+        MyAssert.notNull(colType);
+        if (colType.equalsIgnoreCase("long")) {
+            return "NUMBER(20,0)";
         }
-        logger.info("#######################");
+        if (colType.equalsIgnoreCase("text")) {
+            MyAssert.notNull(colLen);
+            return "VARCHAR2(" + colLen + ")";
+        }
+        if (colType.equalsIgnoreCase("int")) {
+            return "NUMBER(10,0)";
+        }
+        if (colType.equalsIgnoreCase("longtext")) {
+            return "LONG";
+        }
+        if (colType.equalsIgnoreCase("float")) {
+            MyAssert.notNull(colLen);
+            MyAssert.notNull(decimalLen);
+            return "NUMBER(" + colLen + "," + decimalLen + ")";
+        }
+        throw new IllegalArgumentException("未知的列类型:" + colType);
+
+    }
+
+    public void xml2DDL(Log log, File databaseXmlFile, File ddlSqlFile) throws ConfigurationException, URISyntaxException, FileNotFoundException {
+        XMLConfiguration cfg = new XMLConfiguration(databaseXmlFile);
+        List<HierarchicalConfiguration> tables = cfg.configurationsAt("tables.table");
+        log.info("检测到"+tables.size()+"张表");
+        log.info("#######################");
+        for (HierarchicalConfiguration tb : tables) {
+            log.info( tb.getString("[@name]")+" : "+tb.getString("[@desc]"));
+        }
+        log.info("#######################");
         URL resource = OracleSqlGen.class.getResource("/");
         File targetDir = new File(resource.toURI()).getParentFile();
-        File outputFile = new File(targetDir, "output.sql");
-        PrintWriter out = new PrintWriter(outputFile);
-        logger.info("开始生成oracle建表语句:{}", outputFile.getAbsolutePath());
+        PrintWriter out = new PrintWriter(ddlSqlFile);
+        log.info("开始生成oracle建表语句:"+ddlSqlFile.getAbsolutePath());
         for (HierarchicalConfiguration tb : tables) {
             String tableName = tb.getString("[@name]");
             String tableDesc = tb.getString("[@desc]");
@@ -87,30 +109,6 @@ public class OracleSqlGen {
         }
         out.flush();
         out.close();
-        logger.info("生成结束!!!");
-    }
-
-    private static String getColumnType(String colType, Integer colLen, Integer decimalLen) {
-        MyAssert.notNull(colType);
-        if (colType.equalsIgnoreCase("long")) {
-            return "NUMBER(20,0)";
-        }
-        if (colType.equalsIgnoreCase("text")) {
-            MyAssert.notNull(colLen);
-            return "VARCHAR2(" + colLen + ")";
-        }
-        if (colType.equalsIgnoreCase("int")) {
-            return "NUMBER(10,0)";
-        }
-        if (colType.equalsIgnoreCase("longtext")) {
-            return "LONG";
-        }
-        if (colType.equalsIgnoreCase("float")) {
-            MyAssert.notNull(colLen);
-            MyAssert.notNull(decimalLen);
-            return "NUMBER(" + colLen + "," + decimalLen + ")";
-        }
-        throw new IllegalArgumentException("未知的列类型:" + colType);
-
+        log.info("生成结束!!!");
     }
 }
