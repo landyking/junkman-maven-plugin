@@ -53,8 +53,6 @@ public class OracleSqlGen {
             log.info( tb.getString("[@name]")+" : "+tb.getString("[@desc]"));
         }
         log.info("#######################");
-        URL resource = OracleSqlGen.class.getResource("/");
-        File targetDir = new File(resource.toURI()).getParentFile();
         PrintWriter out = new PrintWriter(ddlSqlFile);
         log.info("开始生成oracle建表语句:"+ddlSqlFile.getAbsolutePath());
         for (HierarchicalConfiguration tb : tables) {

@@ -28,7 +28,7 @@ public class Xml2OtherMojo extends JunkmanMojo {
             try {
                 new OracleSqlGen().xml2DDL(getLog(), databaseXmlFile, ddlSqlFile);
             } catch (Exception e) {
-                throw new MojoFailureException("Xml to ddl failure: " + e.getMessage());
+                throw new MojoFailureException("Xml to ddl failure: ",e);
             }
         } else {
             throw new MojoFailureException("Unsupported databaseType: " + getDatabaseType());

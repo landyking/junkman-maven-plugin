@@ -6,7 +6,7 @@
 
     <groupId>com.github.landyking</groupId>
     <artifactId>junkman-maven-plugin</artifactId>
-    <version>1.2.2-SNAPSHOT</version>
+    <version>1.2.2</version>
     <packaging>maven-plugin</packaging>
     <properties>
         <java.version>1.7</java.version>
@@ -17,6 +17,18 @@
 
         <maven.version>3.2.2</maven.version>
     </properties>
+    <distributionManagement>
+        <repository>
+            <id>nexus-release</id>
+            <name>Nexus Releases Repository</name>
+            <url>http://192.168.30.172:8081/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-snapshot</id>
+            <name>Nexus Snapshot Repository</name>
+            <url>http://192.168.30.172:8081/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
     <dependencies>
         <dependency>
             <groupId>commons-configuration</groupId>
