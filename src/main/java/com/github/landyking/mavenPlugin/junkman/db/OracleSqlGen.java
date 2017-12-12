@@ -33,7 +33,7 @@ public class OracleSqlGen {
             return "NUMBER(10,0)";
         }
         if (colType.equalsIgnoreCase("longtext")) {
-            return "LONG";
+            return "CLOB";
         }
         if (colType.equalsIgnoreCase("float")) {
             MyAssert.notNull(colLen);
