@@ -6,39 +6,36 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.maven.plugin.logging.Log;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.List;
 
 /**
  * Created by landy on 2017/12/7.
  */
-public class OracleSqlGen {
+public class MysqlSqlGen {
     private static String getColumnType(String colType, Integer colLen, Integer decimalLen) {
         MyAssert.notNull(colType);
         if (colType.equalsIgnoreCase("long")) {
-            return "NUMBER(20,0)";
+            return "bigint";
         }
         if (colType.equalsIgnoreCase("text")) {
             MyAssert.notNull(colLen);
-            return "NVARCHAR2(" + colLen + ")";
+            return "nvarchar(" + colLen + ")";
         }
         if (colType.equalsIgnoreCase("int")) {
-            return "NUMBER(10,0)";
+            return "int";
         }
         if (colType.equalsIgnoreCase("longtext")) {
-            return "CLOB";
+            return "text";
         }
         if (colType.equalsIgnoreCase("float")) {
             MyAssert.notNull(colLen);
             MyAssert.notNull(decimalLen);
-            return "NUMBER(" + colLen + "," + decimalLen + ")";
+            return "DECIMAL(" + colLen + "," + decimalLen + ")";
         }
         throw new IllegalArgumentException("未知的列类型:" + colType);
 
@@ -47,19 +44,19 @@ public class OracleSqlGen {
     public void xml2DDL(Log log, File databaseXmlFile, File ddlSqlFile) throws ConfigurationException, URISyntaxException, FileNotFoundException {
         XMLConfiguration cfg = new XMLConfiguration(databaseXmlFile);
         List<HierarchicalConfiguration> tables = cfg.configurationsAt("tables.table");
-        log.info("检测到"+tables.size()+"张表");
+        log.info("检测到" + tables.size() + "张表");
         log.info("#######################");
         for (HierarchicalConfiguration tb : tables) {
-            log.info( tb.getString("[@name]")+" : "+tb.getString("[@desc]"));
+            log.info(tb.getString("[@name]") + " : " + tb.getString("[@desc]"));
         }
         log.info("#######################");
         PrintWriter out = new PrintWriter(ddlSqlFile);
-        log.info("开始生成oracle建表语句:"+ddlSqlFile.getAbsolutePath());
+        log.info("开始生成mysql建表语句:" + ddlSqlFile.getAbsolutePath());
         for (HierarchicalConfiguration tb : tables) {
             String tableName = tb.getString("[@name]");
             String tableDesc = tb.getString("[@desc]");
             StringBuilder sb = new StringBuilder();
-            sb.append("drop table " + tableName + ";\r\n");
+            sb.append("/*!50001 DROP TABLE IF EXISTS `" + tableName + "`*/;\r\n");
             sb.append("create table ");
             sb.append(tableName);
             sb.append(" (\r\n");
@@ -72,23 +69,6 @@ public class OracleSqlGen {
                 String colType = col.getString("[@type]");
                 Integer colLen = col.getInteger("[@len]", null);
                 Integer decimalLen = col.getInteger("[@decimalLen]", null);
-                boolean colNullable = col.getBoolean("[@nullable]");
-                boolean colPrimaryKey = col.getBoolean("[@primaryKey]");
-                sb.append(colName);
-                sb.append(" " + getColumnType(colType, colLen, decimalLen));
-                sb.append(" " + (colNullable ? "NULL" : "NOT NULL"));
-                if (colPrimaryKey) {
-                    sb.append(" PRIMARY KEY");
-                }
-                if (flag < columns.size()) {
-                    sb.append(",");
-                }
-                sb.append("\r\n");
-            }
-            sb.append(");\r\n");
-            sb.append("comment on table " + tableName + " is '" + tableDesc + "';\r\n");
-            for (HierarchicalConfiguration col : columns) {
-                String colName = col.getString("[@name]");
                 String colDesc = col.getString("[@desc]");
                 String colDictCode = col.getString("[@dictCode]");
                 String colForeignKey = col.getString("[@foreignKey]");
@@ -101,8 +81,22 @@ public class OracleSqlGen {
                     comment.append("#关联字段" + colForeignKey);
                 }
                 comment.append("'");
-                sb.append("comment on column " + tableName + "." + colName + " is " + comment + ";\r\n");
+                boolean colNullable = col.getBoolean("[@nullable]");
+                boolean colPrimaryKey = col.getBoolean("[@primaryKey]");
+                sb.append(colName);
+                sb.append(" " + getColumnType(colType, colLen, decimalLen));
+                sb.append(" " + (colNullable ? "NULL" : "NOT NULL"));
+                if (colPrimaryKey) {
+                    sb.append(" PRIMARY KEY");
+                }
+                sb.append(" comment " + comment.toString());
+                if (flag < columns.size()) {
+                    sb.append(",");
+                }
+                sb.append("\r\n");
             }
+            sb.append(");\r\n");
+            sb.append("alter table " + tableName + " comment  '" + tableDesc + "';\r\n");
             out.println(sb.toString());
         }
         out.flush();

@@ -1,5 +1,6 @@
 package com.github.landyking.mavenPlugin.junkman;
 
+import com.github.landyking.mavenPlugin.junkman.db.MysqlSqlGen;
 import com.github.landyking.mavenPlugin.junkman.db.OracleSqlGen;
 import com.github.landyking.mavenPlugin.junkman.utils.MyAssert;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -28,10 +29,24 @@ public class Xml2OtherMojo extends JunkmanMojo {
             try {
                 new OracleSqlGen().xml2DDL(getLog(), databaseXmlFile, ddlSqlFile);
             } catch (Exception e) {
-                throw new MojoFailureException("Xml to ddl failure: ",e);
+                throw new MojoFailureException("Xml to ddl failure: ", e);
+            }
+        } else if (getDatabaseType() == DB.Mysql) {
+            File databaseXmlFile = new File(getRootDir(), GenXmlTemplateMojo.DATABASE_XML);
+            MyAssert.notNull(databaseXmlFile);
+            if (!getOutputDirectory().exists()) {
+                boolean operate = getOutputDirectory().mkdirs();
+                MyAssert.isTrue(operate);
+            }
+            File ddlSqlFile = new File(getOutputDirectory(), "database.sql");
+            try {
+                new MysqlSqlGen().xml2DDL(getLog(), databaseXmlFile, ddlSqlFile);
+            } catch (Exception e) {
+                throw new MojoFailureException("Xml to ddl failure: ", e);
             }
         } else {
             throw new MojoFailureException("Unsupported databaseType: " + getDatabaseType());
+
         }
         getLog().info("Xml convert to other success!");
     }

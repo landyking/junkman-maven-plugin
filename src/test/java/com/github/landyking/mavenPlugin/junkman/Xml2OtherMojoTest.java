@@ -31,8 +31,8 @@ public class Xml2OtherMojoTest {
     public void testExecute() throws Exception {
 
         // Find the project
-        File baseDir = new File("E:\\git\\yiwangkao\\ywk-server");
-//        File baseDir = this.resources.getBasedir( "project-test" );
+//        File baseDir = new File("E:\\git\\yiwangkao\\ywk-server");
+        File baseDir = this.resources.getBasedir( "project-test" );
         Assert.assertNotNull( baseDir );
         Assert.assertTrue( baseDir.exists());
         Assert.assertTrue( baseDir.isDirectory());
