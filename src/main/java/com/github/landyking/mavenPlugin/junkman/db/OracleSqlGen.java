@@ -48,8 +48,9 @@ public class OracleSqlGen {
     }
 
     public void xml2DDL(Log log, File databaseXmlFile, File ddlSqlFile) throws ConfigurationException, URISyntaxException, FileNotFoundException {
-        XMLConfiguration cfg = new XMLConfiguration(databaseXmlFile);
+        XMLConfiguration cfg = new XMLConfiguration();
         cfg.setAttributeSplittingDisabled(true);
+        cfg.load(databaseXmlFile);
         List<HierarchicalConfiguration> tables = cfg.configurationsAt("tables.table");
         log.info("检测到"+tables.size()+"张表");
         log.info("#######################");
