@@ -17,7 +17,10 @@ import java.util.List;
  * Created by landy on 2017/12/7.
  */
 public class MysqlSqlGen {
-    private static String getColumnType(String colType, Integer colLen, Integer decimalLen) {
+    private static String getColumnType(String dbType,String colType, Integer colLen, Integer decimalLen) {
+        if (Texts.hasText(dbType)) {
+            return dbType;
+        }
         MyAssert.notNull(colType);
         if (colType.equalsIgnoreCase("long")) {
             return "bigint";
@@ -66,7 +69,8 @@ public class MysqlSqlGen {
                 flag++;
                 sb.append("    ");
                 String colName = col.getString("[@name]");
-                String colType = col.getString("[@type]");
+                String dbType = col.getString("[@dbtype]",null);
+                String colType = col.getString("[@type]",null);
                 Integer colLen = col.getInteger("[@len]", null);
                 Integer decimalLen = col.getInteger("[@decimalLen]", null);
                 String colDesc = col.getString("[@desc]");
@@ -84,7 +88,7 @@ public class MysqlSqlGen {
                 boolean colNullable = col.getBoolean("[@nullable]");
                 boolean colPrimaryKey = col.getBoolean("[@primaryKey]");
                 sb.append(colName);
-                sb.append(" " + getColumnType(colType, colLen, decimalLen));
+                sb.append(" " + getColumnType(dbType,colType, colLen, decimalLen));
                 sb.append(" " + (colNullable ? "NULL" : "NOT NULL"));
                 if (colPrimaryKey) {
                     sb.append(" PRIMARY KEY");

@@ -20,7 +20,8 @@
                 primaryKey (true|false) "false"
                 dictCode CDATA #IMPLIED
                 foreignKey CDATA #IMPLIED
-                type (long|text|int|longtext|float) #REQUIRED >
+                dbtype CDATA #IMPLIED
+                type (long|text|int|longtext|float) #IMPLIED >
         ]>
 <database name="databaseName" desc="数据库说明">
     <tables>

@@ -6,7 +6,7 @@
 
     <groupId>com.github.landyking</groupId>
     <artifactId>junkman-maven-plugin</artifactId>
-    <version>1.2.4-SNAPSHOT</version>
+    <version>1.2.5-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
     <properties>
         <java.version>1.7</java.version>
