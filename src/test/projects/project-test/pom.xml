@@ -28,7 +28,7 @@
                 <artifactId>junkman-maven-plugin</artifactId>
                 <version>1.2.1</version>
                 <configuration>
-                    <databaseType>Mysql</databaseType>
+                    <databaseType>Oracle</databaseType>
                 </configuration>
             </plugin>
         </plugins>

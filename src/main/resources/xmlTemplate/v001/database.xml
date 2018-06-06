@@ -21,6 +21,7 @@
                 dictCode CDATA #IMPLIED
                 foreignKey CDATA #IMPLIED
                 dbtype CDATA #IMPLIED
+                unique CDATA #IMPLIED
                 type (long|text|int|longtext|float) #IMPLIED >
         ]>
 <database name="databaseName" desc="数据库说明">
@@ -28,7 +29,7 @@
         <table name="t_operate_log" desc="操作日志表">
             <columns>
                 <column name="id" type="long" desc="主键" primaryKey="true"/>
-                <column name="operator" type="long" desc="操作人" foreignKey="t_manager.id"/>
+                <column name="operator" type="long" desc="操作人" foreignKey="t_manager.id" />
                 <column name="type" type="int" desc="操作类型" dictCode="manager_operate_type"/>
                 <column name="note" type="text" len="100" desc="操作说明" nullable="true"/>
                 <column name="create_time" type="long" desc="创建时间"/>

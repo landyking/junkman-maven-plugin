@@ -19,6 +19,7 @@
                 nullable (true|false) "false"
                 primaryKey (true|false) "false"
                 dictCode CDATA #IMPLIED
+                unique CDATA #IMPLIED
                 foreignKey CDATA #IMPLIED
                 type (long|text|int|longtext|float) #REQUIRED >
         ]>
@@ -27,7 +28,7 @@
         <table name="t_manager" desc="后台管理员信息表">
             <columns>
                 <column name="id" type="long" desc="主键" primaryKey="true"/>
-                <column name="username" type="text" len="40" desc="账号"/>
+                <column name="username" type="text" len="40" desc="账号" unique="account"/>
                 <column name="password" type="text" len="100" desc="密码"/>
                 <column name="last_ip" type="text" len="20" desc="最后登录IP" nullable="true"/>
                 <column name="last_login_time" type="long" desc="最后登录时间" nullable="true"/>
@@ -38,7 +39,7 @@
             <columns>
                 <column name="id" type="long" desc="主键" primaryKey="true"/>
                 <column name="name" type="text" len="20" desc="栏目名称"/>
-                <column name="code" type="text" len="10" desc="栏目编码"/>
+                <column name="code" type="text" len="10" desc="栏目编码" unique="code"/>
                 <column name="create_time" type="long" desc="创建时间"/>
             </columns>
         </table>
@@ -60,9 +61,9 @@
             <columns>
                 <column name="id" type="long" desc="主键" primaryKey="true"/>
                 <column name="rid" type="long" desc="根字典id。没有为0"/>
-                <column name="pid" type="long" desc="上级字典id。没有为0"/>
-                <column name="code" type="text" len="50" desc="字典编码"/>
-                <column name="description" type="text" len="300" desc="字典描述"/>
+                <column name="pid" type="long" desc="上级字典id。没有为0" unique="dict"/>
+                <column name="code" type="text" len="50" desc="字典编码" unique="dict"/>
+                <column name="description" type="text" len="300" desc="字典描述" unique="desc11"/>
                 <column name="order_flag" type="int" desc="排序序号。小的优先级高。"/>
                 <column name="create_time" type="long" desc="创建时间"/>
                 <column name="update_time" type="long" desc="更新时间"/>
