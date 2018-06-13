@@ -58,10 +58,14 @@ public abstract class SqlGen {
                 String colForeignKey = col.getString("[@foreignKey]");
                 String uniqueName = col.getString("[@unique]");
                 Integer decimalLen = col.getInteger("[@decimalLen]", null);
+                String defaultValue = col.getString("[@default]");
                 boolean colNullable = col.getBoolean("[@nullable]");
                 boolean colPrimaryKey = col.getBoolean("[@primaryKey]");
                 sb.append(colName);
                 sb.append(" " + getColumnType(dbType, colType, colLen, decimalLen));
+                if (Texts.hasText(defaultValue)) {
+                    sb.append(" default " + genDefaultValue(defaultValue));
+                }
                 sb.append(" " + (colNullable ? "NULL" : "NOT NULL"));
                 if (colPrimaryKey) {
                     primaryKeyNames.add(colName);
@@ -91,6 +95,14 @@ public abstract class SqlGen {
         out.flush();
         out.close();
         log.info("生成结束!!!");
+    }
+
+    protected String genDefaultValue(String defaultValue) {
+        if (defaultValue.indexOf('(') > -1) {
+            return defaultValue;
+        }else{
+            return "'"+defaultValue+"'";
+        }
     }
 
     protected abstract void genUniqueKeySql(StringBuilder sb, String tableName, LinkedHashMultimap<String, String> uniqueCols) throws InterruptedException;

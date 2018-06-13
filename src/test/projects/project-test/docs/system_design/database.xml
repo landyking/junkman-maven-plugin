@@ -20,6 +20,7 @@
                 primaryKey (true|false) "false"
                 dictCode CDATA #IMPLIED
                 unique CDATA #IMPLIED
+                default CDATA #IMPLIED
                 foreignKey CDATA #IMPLIED
                 type (long|text|int|longtext|float) #REQUIRED >
         ]>
@@ -29,7 +30,7 @@
             <columns>
                 <column name="id" type="long" desc="主键" primaryKey="true"/>
                 <column name="username" type="text" len="40" desc="账号" unique="account"/>
-                <column name="password" type="text" len="100" desc="密码"/>
+                <column name="password" type="text" len="100" desc="密码" />
                 <column name="last_ip" type="text" len="20" desc="最后登录IP" nullable="true"/>
                 <column name="last_login_time" type="long" desc="最后登录时间" nullable="true"/>
                 <column name="create_time" type="long" desc="创建时间"/>
@@ -51,7 +52,7 @@
                 <column name="brief" type="text" len="300" desc="文章简介" nullable="true"/>
                 <column name="picture_address" type="text" len="300" desc="文章题图地址" nullable="true"/>
                 <column name="content" type="longtext" desc="文章内容"/>
-                <column name="carousel" type="int" desc="是否首页轮播" dictCode="yes_or_no"/>
+                <column name="carousel" type="int" desc="是否首页轮播" default="0" dictCode="yes_or_no"/>
                 <column name="creator" type="long" desc="发布人" foreignKey="t_manager.id"/>
                 <column name="create_time" type="long" desc="创建时间"/>
                 <column name="update_time" type="long" desc="更新时间"/>
@@ -61,7 +62,7 @@
             <columns>
                 <column name="id" type="long" desc="主键" primaryKey="true"/>
                 <column name="rid" type="long" desc="根字典id。没有为0"/>
-                <column name="pid" type="long" desc="上级字典id。没有为0" unique="dict"/>
+                <column name="pid" type="long" desc="上级字典id。没有为0" default="0" unique="dict"/>
                 <column name="code" type="text" len="50" desc="字典编码" unique="dict"/>
                 <column name="description" type="text" len="300" desc="字典描述" unique="desc11"/>
                 <column name="order_flag" type="int" desc="排序序号。小的优先级高。"/>
@@ -72,7 +73,7 @@
         <table name="t_operate_log" desc="操作日志表">
             <columns>
                 <column name="id" type="long" desc="主键" primaryKey="true"/>
-                <column name="operator" type="long" desc="操作人" foreignKey="t_manager.id"/>
+                <column name="operator" type="long" desc="操作人" default="0" foreignKey="t_manager.id"/>
                 <column name="type" type="int" desc="操作类型" dictCode="manager_operate_type"/>
                 <column name="note" type="text" len="100" desc="操作说明" nullable="true"/>
                 <column name="create_time" type="long" desc="创建时间"/>
